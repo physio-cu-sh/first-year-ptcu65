@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>First Year | Study Materials</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f7fb;color:#172033}
+.wrap{max-width:650px;margin:auto;padding:28px 18px 45px}
+.hero{background:linear-gradient(135deg,#182848,#4b6cb7);color:white;border-radius:26px;padding:30px 24px;margin-bottom:20px;box-shadow:0 12px 30px rgba(31,50,90,.18)}
+.hero h1{margin:0 0 8px;font-size:30px}
+.hero p{margin:0;opacity:.88}
+.grid{display:flex;flex-direction:column;gap:12px}
+.card{width:100%;min-height:72px;border:0;border-radius:18px;background:white;display:flex;align-items:center;padding:14px 18px;text-decoration:none;color:#172033;box-shadow:0 5px 16px rgba(20,35,65,.07);cursor:pointer;transition:.15s}
+.card:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(20,35,65,.11)}
+.icon{font-size:27px;width:48px;text-align:center}
+.label{font-size:17px;font-weight:700;flex:1;text-align:left}
+.arrow,.lock{font-size:25px;opacity:.55}
+.footer{text-align:center;color:#8791a5;font-size:12px;margin-top:22px}
+.modal{display:none;position:fixed;inset:0;background:rgba(7,15,30,.58);align-items:center;justify-content:center;padding:20px;z-index:5}
+.box{width:min(420px,100%);background:white;border-radius:24px;padding:25px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.box h2{margin:0 0 8px}
+.box p{margin:0 0 18px;color:#697386}
+input{width:100%;padding:14px;border:1px solid #d9dfeb;border-radius:12px;font-size:16px;outline:none}
+input:focus{border-color:#4b6cb7}
+.actions{display:flex;gap:10px;margin-top:14px}
+.actions button{flex:1;border:0;border-radius:12px;padding:13px;font-weight:700;cursor:pointer}
+.unlock{background:#182848;color:white}
+.cancel{background:#edf1f7;color:#25324a}
+.error{color:#c62828;font-size:13px;margin-top:10px;min-height:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <h1>FIRST YEAR</h1>
+    <p>📚 Study Materials & Resources</p>
+  </section>
+  <div class="grid">
+    
+        <a class="card" href="https://drive.google.com/drive/folders/16vR35YtM833T3r7eliMyyHZhS0UskJWs" target="_blank" rel="noopener">
+          <span class="icon">📚</span>
+          <span class="label">Books²</span>
+          <span class="arrow">›</span>
+        </a>
+        <a class="card" href="https://drive.google.com/drive/folders/182ymuLZxf1hwvIKO-1hq_PPbEXC7Llu1" target="_blank" rel="noopener">
+          <span class="icon">📚</span>
+          <span class="label">Books¹</span>
+          <span class="arrow">›</span>
+        </a>
+        <a class="card" href="https://drive.google.com/drive/folders/19lDT9oylEXqaiq2B5JyZNtpa6qje5MJd" target="_blank" rel="noopener">
+          <span class="icon">🧠</span>
+          <span class="label">Dr Hossam Anatomy Book</span>
+          <span class="arrow">›</span>
+        </a>
+        <button class="card protected" onclick="unlock('Exams 65¹')">
+          <span class="icon">📝</span>
+          <span class="label">Exams 65¹</span>
+          <span class="lock">🔒</span>
+        </button>
+        <button class="card protected" onclick="unlock('Exams 65²')">
+          <span class="icon">📝</span>
+          <span class="label">Exams 65²</span>
+          <span class="lock">🔒</span>
+        </button>
+        <a class="card" href="https://drive.google.com/drive/folders/1cfZYMlExbHnMZW718bKYKorguBqvf4iv" target="_blank" rel="noopener">
+          <span class="icon">📘</span>
+          <span class="label">First Term</span>
+          <span class="arrow">›</span>
+        </a>
+        <a class="card" href="https://drive.google.com/drive/folders/1u08w05_jsr574VdpPJf8kSWFZdH4TvkX" target="_blank" rel="noopener">
+          <span class="icon">📗</span>
+          <span class="label">Second Term</span>
+          <span class="arrow">›</span>
+        </a>
+  </div>
+  <div class="footer">Study Center • First Year</div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="box">
+    <h2>🔐 Protected Folder</h2>
+    <p id="modalTitle">Enter the password to continue.</p>
+    <input id="password" type="password" placeholder="Password" autocomplete="off"
+           onkeydown="if(event.key==='Enter') checkPassword()">
+    <div class="error" id="error"></div>
+    <div class="actions">
+      <button class="cancel" onclick="closeModal()">Cancel</button>
+      <button class="unlock" onclick="checkPassword()">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const protectedFolders = {"Exams 65¹": {"url": "https://drive.google.com/drive/folders/1DVrfFHUoJg1BAqeoz4FnXmoYMQGG51oZ", "hash": "b920f8b7c9e1f623179cbc0431ec26ec944b68cbe12a726495b341876b3cb0f5"}, "Exams 65²": {"url": "https://drive.google.com/drive/folders/1NU0LvN19yUW3FZnSIOJzFXsAwNExpQ-M", "hash": "59bffd67541ae68f2ca3407177f2bbfeb73d4d039d0cf9c8348aee1cc08f5431"}};
+let currentFolder = null;
+
+function unlock(name) {
+  currentFolder = name;
+  document.getElementById('modalTitle').textContent = name + " — enter password to continue.";
+  document.getElementById('password').value = "";
+  document.getElementById('error').textContent = "";
+  document.getElementById('modal').style.display = "flex";
+  setTimeout(() => document.getElementById('password').focus(), 50);
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = "none";
+  currentFolder = null;
+}
+
+async function sha256(text) {
+  const data = new TextEncoder().encode(text);
+  const hash = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+async function checkPassword() {
+  const pw = document.getElementById('password').value;
+  const expected = protectedFolders[currentFolder].hash;
+  const actual = await sha256(pw);
+  if (actual === expected) {
+    window.open(protectedFolders[currentFolder].url, "_blank", "noopener");
+    closeModal();
+  } else {
+    document.getElementById('error').textContent = "❌ Wrong password";
+  }
+}
+
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target.id === 'modal') closeModal();
+});
+</script>
+</body>
+</html>
